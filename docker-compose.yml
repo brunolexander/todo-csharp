@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: backend
+    build: ./backend
+    ports:
+      - "5159:5159"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=${DB_HOST};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    environment:
+      - VITE_PORT=3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  db:
+    container_name: db
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DB_PASSWORD}
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433" 
+    volumes:
+      - db_data:/var/opt/mssql
+
+volumes:
+  db_data:
