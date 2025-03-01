@@ -1,13 +1,22 @@
+using System.Text.Json.Serialization;
+using TodoBack.Domain;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Adicionar serviços ao contêiner.
+// Saiba mais sobre como configurar Swagger/OpenAPI em https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configurar o serializer JSON
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configurar o pipeline de solicitação HTTP.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -34,6 +43,15 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast")
+.WithOpenApi();
+
+app.MapGet("/api/teste", () => {
+    return new[] {
+        new Tarefa { Titulo = "Estudar C#" },
+        new Tarefa { Titulo = "Estudar .NET" },
+    };
+})
+.WithName("GetRoot")
 .WithOpenApi();
 
 app.Run();
