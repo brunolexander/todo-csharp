@@ -69,5 +69,29 @@ namespace TodoBack.Presentation.Controllers
 
             return Ok(tarefa);
         }
+
+        /// <summary>
+        /// Exclui uma tarefa existente.
+        /// </summary>
+        /// <param name="id">ID da tarefa a ser excluída.</param>
+        /// <returns>
+        /// 200 (OK) se a exclusão for bem-sucedida.
+        /// 404 (Not Found) se a tarefa não for encontrada.
+        /// </returns>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult Excluir(int id)
+        {
+            var tarefaExistente = _tarefaService.ObterPorId(id);
+            if (tarefaExistente == null)
+            {
+                return NotFound();
+            }
+
+            _tarefaService.Remover(id);
+
+            return Ok();
+        }
     }
 }
