@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using TodoBack.Domain.Validation;
 
-namespace TodoBack.Domain
+namespace TodoBack.Domain.Entities
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Status
@@ -24,6 +24,7 @@ namespace TodoBack.Domain
         // Título obrigatório e com limite de 100 caracteres
         [Required]
         [MaxLength(100)]
+        [MinLength(1)]
         public string Titulo { get; set; } = string.Empty;
 
         // Descrição, opcional

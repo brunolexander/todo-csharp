@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using TodoBack.Domain;
+using TodoBack.Domain.Validation;
 
-namespace Domain.Tests;
+namespace TodoBack.Domain.Tests.Validation;
 
 /// <summary>
 /// Testes para a validação do atributo DataMaiorQueAttribute.

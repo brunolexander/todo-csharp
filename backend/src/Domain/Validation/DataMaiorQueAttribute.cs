@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace TodoBack.Domain
+namespace TodoBack.Domain.Validation
 {
     /// <summary>
     /// Atributo de validação para garantir que uma data seja maior que outra.
