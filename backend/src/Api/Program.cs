@@ -1,7 +1,10 @@
 using System.Text.Json.Serialization;
-using TodoBack.Domain;
+using TodoBack.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Adicionar serviços de API
+builder.Services.AddControllers();
 
 // Adicionar serviços ao contêiner.
 // Saiba mais sobre como configurar Swagger/OpenAPI em https://aka.ms/aspnetcore/swashbuckle
@@ -53,6 +56,9 @@ app.MapGet("/api/teste", () => {
 })
 .WithName("GetRoot")
 .WithOpenApi();
+
+app.MapControllers()
+    .WithOpenApi();
 
 app.Run();
 
