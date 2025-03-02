@@ -207,5 +207,78 @@ namespace TodoBack.Presentation.Tests.Controllers
             // Verifica se o método Remover NÃO foi chamado
             mock.Verify(service => service.Remover(1), Times.Never);
         }
+
+        /// <summary>
+        /// Testa se a listagem de todas as tarefas retorna 200 (OK) com a lista de tarefas.
+        /// </summary>
+        [Fact]
+        public void ListarTodas_Retorna200_ComListaDeTarefas()
+        {
+            // Arrange
+            var mock = new Mock<ITarefaService>();
+            var controller = new TarefaController(mock.Object);
+
+            var tarefas = new List<Tarefa>
+            {
+                new Tarefa { Id = 1, Titulo = "Tarefa 1" },
+                new Tarefa { Id = 2, Titulo = "Tarefa 2" }
+            };
+
+            // Configura o mock para retornar a lista de tarefas
+            mock.Setup(service => service.ObterTodas()).Returns(tarefas);
+
+            // Act
+            var result = controller.ListarTodas();
+
+            // Assert
+            var actionResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(StatusCodes.Status200OK, actionResult.StatusCode);
+            Assert.Equal(tarefas, actionResult.Value);
+        }
+
+        /// <summary>
+        /// Testa se a listagem de uma tarefa específica retorna 200 (OK) com a tarefa encontrada.
+        /// </summary>
+        [Fact]
+        public void ListarTodas_Retorna200_SeTarefaExistir()
+        {
+            // Arrange
+            var mock = new Mock<ITarefaService>();
+            var controller = new TarefaController(mock.Object);
+
+            var tarefa = new Tarefa { Id = 1, Titulo = "Tarefa 1" };
+
+            // Configura o mock para retornar a tarefa específica
+            mock.Setup(service => service.ObterPorId(1)).Returns(tarefa);
+
+            // Act
+            var result = controller.ListarTodas(1);
+
+            // Assert
+            var actionResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(StatusCodes.Status200OK, actionResult.StatusCode);
+            Assert.Equal(tarefa, actionResult.Value);
+        }
+
+        /// <summary>
+        /// Testa se a listagem de uma tarefa específica retorna 404 (Not Found) se a tarefa não existir.
+        /// </summary>
+        [Fact]
+        public void ListarTodas_Retorna404_SeTarefaNaoExistir()
+        {
+            // Arrange
+            var mock = new Mock<ITarefaService>();
+            var controller = new TarefaController(mock.Object);
+
+            // Configura o mock para retornar null (tarefa não encontrada)
+            mock.Setup(service => service.ObterPorId(1)).Returns((Tarefa?)null);
+
+            // Act
+            var result = controller.ListarTodas(1);
+
+            // Assert
+            var actionResult = Assert.IsType<NotFoundResult>(result);
+            Assert.Equal(StatusCodes.Status404NotFound, actionResult.StatusCode);
+        }
     }
 }

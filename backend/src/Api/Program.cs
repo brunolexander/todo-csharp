@@ -1,4 +1,7 @@
+using System.Reflection;
 using System.Text.Json.Serialization;
+using TodoBack.Application.Interfaces;
+using TodoBack.Application.Services;
 using TodoBack.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,13 +12,25 @@ builder.Services.AddControllers();
 // Adicionar serviços ao contêiner.
 // Saiba mais sobre como configurar Swagger/OpenAPI em https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(config =>
+{
+    config.EnableAnnotations();
+    
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    config.IncludeXmlComments(xmlPath);
+});
 
 // Configurar o serializer JSON
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+
+// Injetar dependências
+builder.Services.AddScoped<ITarefaService, TarefaService>();
+
 
 var app = builder.Build();
 
