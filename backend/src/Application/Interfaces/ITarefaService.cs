@@ -2,22 +2,40 @@ using TodoBack.Domain.Entities;
 
 namespace TodoBack.Application.Interfaces
 {
-    // Interface para o serviço de tarefas
+    /// <summary>
+    /// Interface para o serviço de tarefas.
+    /// </summary>
     public interface ITarefaService
     {
-        // Método para obter todas as tarefas
+        /// <summary>
+        /// Obtém todas as tarefas.
+        /// </summary>
+        /// <returns>Uma lista de tarefas.</returns>
         IEnumerable<Tarefa> ObterTodas();
 
-        // Método para obter uma tarefa por ID
-        Tarefa ObterPorId(int id);
+        /// <summary>
+        /// Obtém uma tarefa pelo seu ID.
+        /// </summary>
+        /// <param name="id">O ID da tarefa.</param>
+        /// <returns>A tarefa encontrada ou null se não existir.</returns>
+        Tarefa? ObterPorId(int id);
 
-        // Método para adicionar uma nova tarefa
+        /// <summary>
+        /// Adiciona uma nova tarefa.
+        /// </summary>
+        /// <param name="tarefa">A tarefa a ser adicionada.</param>
         void Adicionar(Tarefa tarefa);
 
-        // Método para atualizar uma tarefa existente
+        /// <summary>
+        /// Atualiza uma tarefa existente.
+        /// </summary>
+        /// <param name="tarefa">A tarefa com os dados atualizados.</param>
         void Atualizar(Tarefa tarefa);
 
-        // Método para remover uma tarefa por ID
+        /// <summary>
+        /// Remove uma tarefa pelo seu ID.
+        /// </summary>
+        /// <param name="id">O ID da tarefa a ser removida.</param>
         void Remover(int id);
     }
 }
