@@ -2,7 +2,9 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using TodoBack.Application.Interfaces;
 using TodoBack.Application.Services;
-using TodoBack.Domain.Entities;
+using TodoBack.Infrastructure.Interfaces;
+using TodoBack.Infrastructure.Services;
+using TodoBack.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +15,12 @@ builder.Services.AddControllers();
 // Saiba mais sobre como configurar Swagger/OpenAPI em https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+
+// Configurar Swagger/OpenAPI
 builder.Services.AddSwaggerGen(config =>
 {
     config.EnableAnnotations();
-    
+
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     config.IncludeXmlComments(xmlPath);
@@ -28,56 +32,28 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-// Injetar dependências
+// Injetar 
 builder.Services.AddScoped<ITarefaService, TarefaService>();
+builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
+builder.Services.AddScoped<IDatabaseService>(sp => 
+    new DatabaseService(sp.GetRequiredService<IConfiguration>())
+);
 
 
 var app = builder.Build();
 
-// Configurar o pipeline de solicitação HTTP.
+// Configurar swagger UI no ambiente de desenvolvimento
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+// Configurar o pipeline de solicitação HTTP.
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
-app.MapGet("/api/teste", () => {
-    return new[] {
-        new Tarefa { Titulo = "Estudar C#" },
-        new Tarefa { Titulo = "Estudar .NET" },
-    };
-})
-.WithName("GetRoot")
-.WithOpenApi();
-
+// Mapear rotas da API
 app.MapControllers()
     .WithOpenApi();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

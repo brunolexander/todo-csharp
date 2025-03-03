@@ -17,28 +17,41 @@ namespace TodoBack.Domain.Entities
     /// </summary>
     public class Tarefa
     {
-        // Chave primária
+        /// <summary>
+        /// Chave primária.
+        /// </summary>
         [Key]
         public int Id { get; set; }
 
-        // Título obrigatório e com limite de 100 caracteres
+        /// <summary>
+        /// Título obrigatório e com limite de 100 caracteres.
+        /// </summary>
         [Required]
         [MaxLength(100)]
         [MinLength(1)]
         public string Titulo { get; set; } = string.Empty;
 
-        // Descrição, opcional
+        /// <summary>
+        /// Descrição opcional.
+        /// </summary>
         public string? Descricao { get; set; }
 
-        // Data de criação, inicializada com a data atual
+        /// <summary>
+        /// Data de criação, inicializada com a data atual.
+        /// </summary>
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
 
-        // Data de conclusão, deve ser maior que a data de criação
+        /// <summary>
+        /// Data de conclusão, deve ser maior que a data de criação.
+        /// </summary>
+        /// <example>2025-03-03T16:14:58.016Z</example>
         [DataMaiorQue(nameof(DataCriacao))]
         public DateTime? DataConclusao { get; set; }
 
-        // Status atual, inicializado como pendente
+        /// <summary>
+        /// Status atual, inicializado como pendente.
+        /// </summary>
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public Status Status { get; set; } = Status.Pendente;
     }
-};
+}

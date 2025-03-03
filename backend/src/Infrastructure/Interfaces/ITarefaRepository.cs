@@ -1,11 +1,12 @@
 using TodoBack.Domain.Entities;
 
-namespace TodoBack.Application.Interfaces
+namespace TodoBack.Infrastructure.Interfaces
 {
     /// <summary>
-    /// Interface para o serviço de tarefas.
+    /// Interface para o repositório de tarefas.
+    /// Define os métodos para operações de banco de dados relacionadas a tarefas.
     /// </summary>
-    public interface ITarefaService
+    public interface ITarefaRepository
     {
         /// <summary>
         /// Obtém todas as tarefas.

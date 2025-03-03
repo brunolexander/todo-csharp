@@ -95,7 +95,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             };
 
             // Configura o mock para retornar a tarefa existente
-            mock.Setup(service => service.ObterPorId(1)).Returns(tarefaExistente);
+            mock.Setup(service => service.ObterPorId(1)).ReturnsAsync(tarefaExistente);
 
             var result = controller.Atualizar(1, tarefaAtualizada);
 
@@ -145,7 +145,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             };
 
             // Configura o mock para retornar null (tarefa não encontrada)
-            mock.Setup(service => service.ObterPorId(1)).Returns((Tarefa?)null);
+            mock.Setup(service => service.ObterPorId(1)).ReturnsAsync((Tarefa?)null);
 
             var result = controller.Atualizar(1, tarefaAtualizada);
 
@@ -171,7 +171,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             };
 
             // Configura o mock para retornar a tarefa existente
-            mock.Setup(service => service.ObterPorId(1)).Returns(tarefaExistente);
+            mock.Setup(service => service.ObterPorId(1)).ReturnsAsync(tarefaExistente);
 
             // Act
             var result = controller.Excluir(1);
@@ -195,7 +195,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             var controller = new TarefaController(mock.Object);
 
             // Configura o mock para retornar null (tarefa não encontrada)
-            mock.Setup(service => service.ObterPorId(1)).Returns((Tarefa?)null);
+            mock.Setup(service => service.ObterPorId(1)).ReturnsAsync((Tarefa?)null);
 
             // Act
             var result = controller.Excluir(1);
@@ -225,7 +225,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             };
 
             // Configura o mock para retornar a lista de tarefas
-            mock.Setup(service => service.ObterTodas()).Returns(tarefas);
+            mock.Setup(service => service.ObterTodas()).ReturnsAsync(tarefas);
 
             // Act
             var result = controller.ListarTodas();
@@ -249,7 +249,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             var tarefa = new Tarefa { Id = 1, Titulo = "Tarefa 1" };
 
             // Configura o mock para retornar a tarefa específica
-            mock.Setup(service => service.ObterPorId(1)).Returns(tarefa);
+            mock.Setup(service => service.ObterPorId(1)).ReturnsAsync(tarefa);
 
             // Act
             var result = controller.ListarTodas(1);
@@ -271,7 +271,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             var controller = new TarefaController(mock.Object);
 
             // Configura o mock para retornar null (tarefa não encontrada)
-            mock.Setup(service => service.ObterPorId(1)).Returns((Tarefa?)null);
+            mock.Setup(service => service.ObterPorId(1)).ReturnsAsync((Tarefa?)null);
 
             // Act
             var result = controller.ListarTodas(1);
