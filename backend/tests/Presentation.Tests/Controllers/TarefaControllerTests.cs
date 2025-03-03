@@ -75,7 +75,7 @@ namespace TodoBack.Presentation.Tests.Controllers
         /// Testa se a atualização retorna 200 (OK) para uma tarefa válida.
         /// </summary>
         [Fact]
-        public void Atualizar_Retorna200_SeValido()
+        public async Task Atualizar_Retorna200_SeValidoAsync()
         {
             var mock = new Mock<ITarefaService>();
             var controller = new TarefaController(mock.Object);
@@ -96,8 +96,9 @@ namespace TodoBack.Presentation.Tests.Controllers
 
             // Configura o mock para retornar a tarefa existente
             mock.Setup(service => service.ObterPorId(1)).ReturnsAsync(tarefaExistente);
+            mock.Setup(service => service.Atualizar(tarefaAtualizada)).ReturnsAsync(tarefaAtualizada);
 
-            var result = controller.Atualizar(1, tarefaAtualizada);
+            var result = await controller.Atualizar(1, tarefaAtualizada);
 
             var actionResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(StatusCodes.Status200OK, actionResult.StatusCode);
@@ -108,7 +109,7 @@ namespace TodoBack.Presentation.Tests.Controllers
         /// Testa se a atualização retorna 400 (Bad Request) quando os dados são inválidos.
         /// </summary>
         [Fact]
-        public void Atualizar_Retorna400_SeInvalido()
+        public async Task Atualizar_Retorna400_SeInvalido()
         {
             var mock = new Mock<ITarefaService>();
             var controller = new TarefaController(mock.Object);
@@ -122,7 +123,7 @@ namespace TodoBack.Presentation.Tests.Controllers
 
             controller.ValidarModel(tarefa);
 
-            var result = controller.Atualizar(1, tarefa);
+            var result = await controller.Atualizar(1, tarefa);
 
             var actionResult = Assert.IsType<BadRequestResult>(result);
             Assert.Equal(StatusCodes.Status400BadRequest, actionResult.StatusCode);
@@ -132,7 +133,7 @@ namespace TodoBack.Presentation.Tests.Controllers
         /// Testa se a atualização retorna 404 (Not Found) quando a tarefa não existe.
         /// </summary>
         [Fact]
-        public void Atualizar_Retorna404_SeNaoEncontrado()
+        public async Task Atualizar_Retorna404_SeNaoEncontrado()
         {
             var mock = new Mock<ITarefaService>();
             var controller = new TarefaController(mock.Object);
@@ -147,7 +148,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             // Configura o mock para retornar null (tarefa não encontrada)
             mock.Setup(service => service.ObterPorId(1)).ReturnsAsync((Tarefa?)null);
 
-            var result = controller.Atualizar(1, tarefaAtualizada);
+            var result = await controller.Atualizar(1, tarefaAtualizada);
 
             var actionResult = Assert.IsType<NotFoundResult>(result);
             Assert.Equal(StatusCodes.Status404NotFound, actionResult.StatusCode);
@@ -157,7 +158,7 @@ namespace TodoBack.Presentation.Tests.Controllers
         /// Testa se a exclusão retorna 200 (OK) quando a tarefa existe.
         /// </summary>
         [Fact]
-        public void Excluir_Retorna200_SeExistir()
+        public async Task Excluir_Retorna200_SeExistirAsync()
         {
             // Arrange
             var mock = new Mock<ITarefaService>();
@@ -174,7 +175,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             mock.Setup(service => service.ObterPorId(1)).ReturnsAsync(tarefaExistente);
 
             // Act
-            var result = controller.Excluir(1);
+            var result = await controller.Excluir(1);
 
             // Assert
             var actionResult = Assert.IsType<OkResult>(result);
@@ -188,7 +189,7 @@ namespace TodoBack.Presentation.Tests.Controllers
         /// Testa se a exclusão retorna 404 (Not Found) quando a tarefa não existe.
         /// </summary>
         [Fact]
-        public void Excluir_Retorna404_SeNaoExistir()
+        public async Task Excluir_Retorna404_SeNaoExistirAsync()
         {
             // Arrange
             var mock = new Mock<ITarefaService>();
@@ -198,7 +199,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             mock.Setup(service => service.ObterPorId(1)).ReturnsAsync((Tarefa?)null);
 
             // Act
-            var result = controller.Excluir(1);
+            var result = await controller.Excluir(1);
 
             // Assert
             var actionResult = Assert.IsType<NotFoundResult>(result);
@@ -212,7 +213,7 @@ namespace TodoBack.Presentation.Tests.Controllers
         /// Testa se a listagem de todas as tarefas retorna 200 (OK) com a lista de tarefas.
         /// </summary>
         [Fact]
-        public void ListarTodas_Retorna200_ComListaDeTarefas()
+        public async Task ListarTodas_Retorna200_ComListaDeTarefasAsync()
         {
             // Arrange
             var mock = new Mock<ITarefaService>();
@@ -228,7 +229,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             mock.Setup(service => service.ObterTodas()).ReturnsAsync(tarefas);
 
             // Act
-            var result = controller.ListarTodas();
+            var result = await controller.ListarTodas();
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result);
@@ -240,7 +241,7 @@ namespace TodoBack.Presentation.Tests.Controllers
         /// Testa se a listagem de uma tarefa específica retorna 200 (OK) com a tarefa encontrada.
         /// </summary>
         [Fact]
-        public void ListarTodas_Retorna200_SeTarefaExistir()
+        public async Task ListarTodas_Retorna200_SeTarefaExistirAsync()
         {
             // Arrange
             var mock = new Mock<ITarefaService>();
@@ -252,7 +253,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             mock.Setup(service => service.ObterPorId(1)).ReturnsAsync(tarefa);
 
             // Act
-            var result = controller.ListarTodas(1);
+            var result = await controller.ListarTodas(1);
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result);
@@ -264,7 +265,7 @@ namespace TodoBack.Presentation.Tests.Controllers
         /// Testa se a listagem de uma tarefa específica retorna 404 (Not Found) se a tarefa não existir.
         /// </summary>
         [Fact]
-        public void ListarTodas_Retorna404_SeTarefaNaoExistir()
+        public async Task ListarTodas_Retorna404_SeTarefaNaoExistirAsync()
         {
             // Arrange
             var mock = new Mock<ITarefaService>();
@@ -274,7 +275,7 @@ namespace TodoBack.Presentation.Tests.Controllers
             mock.Setup(service => service.ObterPorId(1)).ReturnsAsync((Tarefa?)null);
 
             // Act
-            var result = controller.ListarTodas(1);
+            var result = await controller.ListarTodas(1);
 
             // Assert
             var actionResult = Assert.IsType<NotFoundResult>(result);

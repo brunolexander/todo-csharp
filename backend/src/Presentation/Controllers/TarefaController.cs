@@ -54,23 +54,23 @@ namespace TodoBack.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(Summary = "Atualiza uma tarefa existente")]
-        public IActionResult Atualizar(int id, [FromBody] Tarefa tarefa)
+        public async Task<IActionResult> Atualizar(int id, [FromBody] Tarefa tarefa)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var tarefaExistente = _tarefaService.ObterPorId(id);
+            var tarefaExistente  = await _tarefaService.ObterPorId(id);
             if (tarefaExistente == null)
             {
                 return NotFound();
             }
 
             tarefa.Id = id;
-            _tarefaService.Atualizar(tarefa);
+            var tarefaAtualizada = await _tarefaService.Atualizar(tarefa);
 
-            return Ok(tarefa);
+            return Ok(tarefaAtualizada);
         }
 
         /// <summary>
@@ -85,15 +85,15 @@ namespace TodoBack.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(Summary = "Exclui uma tarefa existente")]
-        public IActionResult Excluir(int id)
+        public async Task<IActionResult> Excluir(int id)
         {
-            var tarefaExistente = _tarefaService.ObterPorId(id);
+            var tarefaExistente = await _tarefaService.ObterPorId(id);
             if (tarefaExistente == null)
             {
                 return NotFound();
             }
 
-            _tarefaService.Remover(id);
+            await _tarefaService.Remover(id);
 
             return Ok();
         }
@@ -105,9 +105,9 @@ namespace TodoBack.Presentation.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerOperation(Summary = "Lista todas as tarefas")]
-        public IActionResult ListarTodas()
+        public async Task<IActionResult> ListarTodas()
         {
-            var tarefas = _tarefaService.ObterTodas();
+            var tarefas = await _tarefaService.ObterTodas();
             return Ok(tarefas); // Retorna 200 com a lista de tarefas
         }
 
@@ -123,9 +123,9 @@ namespace TodoBack.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(Summary = "Lista uma tarefa específica pelo ID")]
-        public IActionResult ListarTodas(int id)
+        public async Task<IActionResult> ListarTodas(int id)
         {
-            var tarefa = _tarefaService.ObterPorId(id);
+            var tarefa = await _tarefaService.ObterPorId(id);
             if (tarefa == null)
             {
                 return NotFound(); // Retorna 404 se a tarefa não for encontrada
