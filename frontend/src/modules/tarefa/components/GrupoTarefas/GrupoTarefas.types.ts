@@ -1,4 +1,5 @@
 import TarefaStatus from "../../enums/TarefaStatus.enum";
+import Tarefa from "../../models/Tarefa.model";
 
 /**
  * Propriedades para o componente GrupoTarefas.
@@ -8,6 +9,7 @@ import TarefaStatus from "../../enums/TarefaStatus.enum";
  */
 interface GrupoTarefasProps {
     status: TarefaStatus;
+    tarefas: Array<Tarefa>;
 }
 
 export default GrupoTarefasProps;

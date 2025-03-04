@@ -21,6 +21,7 @@ services:
     build: ./frontend
     environment:
       - VITE_PORT=3000
+      - VITE_API_URL=http://localhost:5159/api
     network_mode: "host"
     ports:
       - "3000:3000"

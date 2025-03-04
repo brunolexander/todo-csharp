@@ -1,11 +1,11 @@
-import React from 'react';
 import GrupoTarefasProps from './GrupoTarefas.types';
 import BotaoAdicionarTarefa from '../BotaoAdicionarTarefa';
 import TarefaStatus from '../../enums/TarefaStatus.enum';
 import CardTarefa from '../CardTarefa';
 
 function GrupoTarefas({
-    status
+    status,
+    tarefas
 }: GrupoTarefasProps
 ) {
     const descricaoStatus = {
@@ -17,45 +17,20 @@ function GrupoTarefas({
     return (
         <div className="bg-gray-800 rounded-lg shadow-md p-4">
             <div className="mb-2 flex justify-between items-center">
-                <span className="font-semibold">{descricaoStatus[status]} (4)</span>
+                <span className="font-semibold">{descricaoStatus[status]} ({tarefas.length})</span>
                 <BotaoAdicionarTarefa />
             </div>
 
+            {tarefas.map((tarefa) => (
             <CardTarefa
-                id={0}
-                titulo={''}
-                descricao={null}
-                dataCriacao={new Date()}
-                dataConclusao={null}
-                status={TarefaStatus.Pendente}
+                id={tarefa.id}
+                titulo={tarefa.titulo}
+                descricao={tarefa.descricao}
+                dataCriacao={tarefa.dataCriacao}
+                dataConclusao={tarefa.dataConclusao}
+                status={tarefa.status}
             />
-
-            <CardTarefa
-                id={0}
-                titulo={''}
-                descricao={null}
-                dataCriacao={new Date()}
-                dataConclusao={null}
-                status={TarefaStatus.Pendente}
-            />
-
-            <CardTarefa
-                id={0}
-                titulo={''}
-                descricao={null}
-                dataCriacao={new Date()}
-                dataConclusao={null}
-                status={TarefaStatus.Pendente}
-            />
-
-            <CardTarefa
-                id={0}
-                titulo={''}
-                descricao={null}
-                dataCriacao={new Date()}
-                dataConclusao={null}
-                status={TarefaStatus.Pendente}
-            />
+            ))}
         </div>
     );
 }
