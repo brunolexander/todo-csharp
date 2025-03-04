@@ -4,9 +4,6 @@ import MenuAccordion from '../MenuAccordion';
 import MenuItem from "../MenuAccordion/MenuItem";
 
 function BarraLateral() {
-    const [projetosAberto, setProjetosAberto] = useState(true);
-    const [tarefasAberto, setTarefasAberto] = useState(true);
-
     return (
         <aside className="w-64 bg-gray-800 p-4 flex flex-col fixed h-full">
             <div className="mb-8">
@@ -14,7 +11,7 @@ function BarraLateral() {
             </div>
 
             <nav className="flex-1 overflow-y-auto">
-                <ul>
+                <ul className="w-[200px]">
                     <li>
                         <MenuAccordion titulo={'Projetos'}>
                             <MenuItem />
