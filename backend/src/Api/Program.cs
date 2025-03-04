@@ -15,6 +15,18 @@ builder.Services.AddControllers();
 // Saiba mais sobre como configurar Swagger/OpenAPI em https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+// Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+
 
 // Configurar Swagger/OpenAPI
 builder.Services.AddSwaggerGen(config =>
@@ -55,5 +67,7 @@ app.UseHttpsRedirection();
 // Mapear rotas da API
 app.MapControllers()
     .WithOpenApi();
+
+app.UseCors();
 
 app.Run();

@@ -221,8 +221,8 @@ namespace TodoBack.Presentation.Tests.Controllers
 
             var tarefas = new List<Tarefa>
             {
-                new Tarefa { Id = 1, Titulo = "Tarefa 1" },
-                new Tarefa { Id = 2, Titulo = "Tarefa 2" }
+                new() { Id = 1, Titulo = "Tarefa 1" },
+                new() { Id = 2, Titulo = "Tarefa 2" }
             };
 
             // Configura o mock para retornar a lista de tarefas
@@ -241,7 +241,7 @@ namespace TodoBack.Presentation.Tests.Controllers
         /// Testa se a listagem de uma tarefa específica retorna 200 (OK) com a tarefa encontrada.
         /// </summary>
         [Fact]
-        public async Task ListarTodas_Retorna200_SeTarefaExistirAsync()
+        public async Task ListarPorId_Retorna200_SeTarefaExistirAsync()
         {
             // Arrange
             var mock = new Mock<ITarefaService>();
@@ -265,7 +265,7 @@ namespace TodoBack.Presentation.Tests.Controllers
         /// Testa se a listagem de uma tarefa específica retorna 404 (Not Found) se a tarefa não existir.
         /// </summary>
         [Fact]
-        public async Task ListarTodas_Retorna404_SeTarefaNaoExistirAsync()
+        public async Task ListarPorId_Retorna404_SeTarefaNaoExistirAsync()
         {
             // Arrange
             var mock = new Mock<ITarefaService>();
@@ -280,6 +280,45 @@ namespace TodoBack.Presentation.Tests.Controllers
             // Assert
             var actionResult = Assert.IsType<NotFoundResult>(result);
             Assert.Equal(StatusCodes.Status404NotFound, actionResult.StatusCode);
+        }
+                
+        /// <summary>
+        /// Testa se a filtragem de tarefas por status retorna 200 (OK) com a lista de tarefas corretamente filtrada.
+        /// </summary>
+        [Fact]
+        public async Task FiltrarTarefasPorStatus_Retorna200_ComTarefasFiltradasAsync()
+        {
+            // Arrange
+            var mock = new Mock<ITarefaService>();
+            var controller = new TarefaController(mock.Object);
+
+            var statusParaFiltrar = Status.Concluida;
+
+            // Cria uma lista de tarefas com status diferentes
+            var todasTarefas = new List<Tarefa>
+            {
+                new() { Id = 1, Titulo = "Tarefa 1", Status = Status.Concluida },
+                new() { Id = 2, Titulo = "Tarefa 2", Status = Status.Pendente },
+                new() { Id = 3, Titulo = "Tarefa 3", Status = Status.Concluida },
+                new() { Id = 4, Titulo = "Tarefa 4", Status = Status.EmProgresso }
+            };
+
+            // Filtra as tarefas manualmente para usar como resultado esperado
+            var tarefasFiltradasEsperadas = todasTarefas.Where(t => t.Status == statusParaFiltrar).ToList();
+
+            // Configura o mock para retornar as tarefas filtradas
+            mock.Setup(service => service.ObterPorStatus(statusParaFiltrar)).ReturnsAsync(tarefasFiltradasEsperadas);
+
+            // Act
+            var result = await controller.ListarTodas(statusParaFiltrar);
+
+            // Assert
+            var actionResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(StatusCodes.Status200OK, actionResult.StatusCode);
+
+            // Verifica se as tarefas retornadas correspondem às tarefas filtradas esperadas
+            var tarefasRetornadas = Assert.IsType<List<Tarefa>>(actionResult.Value);
+            Assert.Equal(tarefasFiltradasEsperadas, tarefasRetornadas);
         }
     }
 }

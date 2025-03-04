@@ -36,6 +36,16 @@ namespace TodoBack.Application.Services
         }
 
         /// <summary>
+        /// Obtém todas as tarefas com o status especificado.
+        /// </summary>
+        /// <param name="status">Status das tarefas a serem obtidas.</param>
+        /// <returns>Uma coleção de tarefas com o status especificado.</returns>
+        public async Task<IEnumerable<Tarefa>> ObterPorStatus(Status status)
+        {
+            return await _tarefaRepository.ObterPorStatus(status);
+        }
+
+        /// <summary>
         /// Adiciona uma nova tarefa ao repositório.
         /// </summary>
         /// <param name="tarefa">Tarefa a ser adicionada.</param>

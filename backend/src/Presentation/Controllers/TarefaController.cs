@@ -24,6 +24,7 @@ namespace TodoBack.Presentation.Controllers
         /// 400 (Bad Request) se os dados forem inválidos.
         /// </returns>
         [HttpPost]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [SwaggerOperation(Summary = "Cria uma nova tarefa")]
@@ -50,6 +51,7 @@ namespace TodoBack.Presentation.Controllers
         /// 404 (Not Found) se a tarefa não for encontrada.
         /// </returns>
         [HttpPut("{id}")]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -103,11 +105,15 @@ namespace TodoBack.Presentation.Controllers
         /// </summary>
         /// <returns>200 (OK) com a lista de tarefas.</returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Tarefa>))]
         [SwaggerOperation(Summary = "Lista todas as tarefas")]
-        public async Task<IActionResult> ListarTodas()
+        public async Task<IActionResult> ListarTodas([FromQuery] Status? status = null)
         {
-            var tarefas = await _tarefaService.ObterTodas();
+            var tarefas = (status == null)
+                ? await _tarefaService.ObterTodas() 
+                : await _tarefaService.ObterPorStatus((Status)status);
+
             return Ok(tarefas); // Retorna 200 com a lista de tarefas
         }
 
@@ -120,6 +126,7 @@ namespace TodoBack.Presentation.Controllers
         /// 404 (Not Found) se a tarefa não for encontrada.
         /// </returns>
         [HttpGet("{id}")]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(Summary = "Lista uma tarefa específica pelo ID")]

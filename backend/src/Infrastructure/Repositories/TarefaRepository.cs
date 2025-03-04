@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Dapper;
 using TodoBack.Domain.Entities;
 using TodoBack.Infrastructure.Interfaces;
@@ -37,6 +36,20 @@ namespace TodoBack.Infrastructure.Repositories
             return await conexao.QueryFirstOrDefaultAsync<Tarefa>(
                 "SELECT * FROM Tarefas WHERE Id = @Id", 
                 new { Id = id }
+            );
+        }
+
+        /// <summary>
+        /// Obtém todas as tarefas com um status específico.
+        /// </summary>
+        /// <param name="status">Status das tarefas a serem obtidas.</param>
+        /// <returns>Uma coleção de tarefas com o status especificado.</returns>
+        public async Task<IEnumerable<Tarefa>> ObterPorStatus(Status status)
+        {
+            using var conexao = _databaseService.GetConnection();
+            return await conexao.QueryAsync<Tarefa>(
+                "SELECT * FROM Tarefas WHERE Status = @Status", 
+                new { Status = status.ToString() }
             );
         }
 

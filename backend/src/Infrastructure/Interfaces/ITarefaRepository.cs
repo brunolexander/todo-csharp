@@ -22,6 +22,13 @@ namespace TodoBack.Infrastructure.Interfaces
         Task<Tarefa?> ObterPorId(int id);
 
         /// <summary>
+        /// Obtém todas as tarefas com o status especificado.
+        /// </summary>
+        /// <param name="status">O status das tarefas a serem obtidas.</param>
+        /// <returns>Uma lista de tarefas com o status especificado.</returns>
+        Task<IEnumerable<Tarefa>> ObterPorStatus(Status status);
+
+        /// <summary>
         /// Adiciona uma nova tarefa.
         /// </summary>
         /// <param name="tarefa">A tarefa a ser adicionada.</param>

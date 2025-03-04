@@ -74,6 +74,34 @@ public class TarefaRepositoryTests : IClassFixture<DatabaseFixture>
     }
 
     /// <summary>
+    /// Testa se o método ObterPorStatus retorna corretamente as tarefas pelo status.
+    /// </summary>
+    [Fact]
+    public async Task ObterPorStatus_DeveRetornarTarefasCorretas()
+    {
+        // Preparação
+        using var transacao = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        using var conexao = _databaseFixture.GetConnection();
+        await conexao.ExecuteAsync(
+            "INSERT INTO Tarefas (Titulo, Status) VALUES (@Titulo, @Status)",
+            new { Titulo = "Tarefa 1", Status = Status.Pendente.ToString() });
+        await conexao.ExecuteAsync(
+            "INSERT INTO Tarefas (Titulo, Status) VALUES (@Titulo, @Status)",
+            new { Titulo = "Tarefa 2", Status = Status.EmProgresso.ToString() });
+        await conexao.ExecuteAsync(
+            "INSERT INTO Tarefas (Titulo, Status) VALUES (@Titulo, @Status)",
+            new { Titulo = "Tarefa 3", Status = Status.Concluida.ToString() });
+
+        // Ação
+        var tarefasPendentes = await _tarefaRepository.ObterPorStatus(Status.Pendente);
+
+        // Verificação
+        Assert.NotNull(tarefasPendentes);
+        Assert.Single(tarefasPendentes);
+        Assert.All(tarefasPendentes, t => Assert.Equal(Status.Pendente, t.Status));
+    }
+
+    /// <summary>
     /// Testa se o método Atualizar modifica corretamente uma tarefa no banco de dados.
     /// </summary>
     [Fact]
