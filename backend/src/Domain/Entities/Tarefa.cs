@@ -40,6 +40,11 @@ namespace TodoBack.Domain.Entities
         /// Data de criação, inicializada com a data atual.
         /// </summary>
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
+        
+        /// <summary>
+        /// Data de exclusão
+        /// </summary>
+        public DateTime DataExclusao { get; set; }
 
         /// <summary>
         /// Data de conclusão, deve ser maior que a data de criação.

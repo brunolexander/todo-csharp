@@ -22,7 +22,7 @@ namespace TodoBack.Infrastructure.Repositories
         public async Task<IEnumerable<Tarefa>> ObterTodas()
         {
             using var conexao = _databaseService.GetConnection();
-            return await conexao.QueryAsync<Tarefa>("SELECT * FROM Tarefas");
+            return await conexao.QueryAsync<Tarefa>("SELECT * FROM Tarefas WHERE DataExclusao IS NULL");
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace TodoBack.Infrastructure.Repositories
         {
             using var conexao = _databaseService.GetConnection();
             return await conexao.QueryFirstOrDefaultAsync<Tarefa>(
-                "SELECT * FROM Tarefas WHERE Id = @Id", 
+                "SELECT * FROM Tarefas WHERE Id = @Id AND DataExclusao IS NULL", 
                 new { Id = id }
             );
         }
@@ -48,7 +48,7 @@ namespace TodoBack.Infrastructure.Repositories
         {
             using var conexao = _databaseService.GetConnection();
             return await conexao.QueryAsync<Tarefa>(
-                "SELECT * FROM Tarefas WHERE Status = @Status", 
+                "SELECT * FROM Tarefas WHERE Status = @Status AND DataExclusao IS NULL", 
                 new { Status = status.ToString() }
             );
         }
@@ -152,7 +152,10 @@ namespace TodoBack.Infrastructure.Repositories
         public async Task Remover(int id)
         {
             using var conexao = _databaseService.GetConnection();
-            await conexao.ExecuteAsync("DELETE FROM Tarefas WHERE Id = @Id", new { Id = id });
+            await conexao.ExecuteAsync(
+                "UPDATE Tarefas SET DataExclusao = GETDATE() WHERE Id = @Id", 
+                new { Id = id }
+            );
         }
     }
 }
