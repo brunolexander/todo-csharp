@@ -28,16 +28,16 @@ namespace TodoBack.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [SwaggerOperation(Summary = "Cria uma nova tarefa")]
-        public ActionResult<Tarefa> Criar([FromBody] Tarefa tarefa)
+        public async Task<IActionResult> Criar([FromBody] Tarefa tarefa)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            _tarefaService.Adicionar(tarefa);
+            var tarefaAdicionada = await _tarefaService.Adicionar(tarefa);
 
-            return CreatedAtAction(nameof(Criar), tarefa);
+            return CreatedAtAction(nameof(Criar), tarefaAdicionada);
         }
 
         /// <summary>
