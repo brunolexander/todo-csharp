@@ -63,18 +63,23 @@ namespace TodoBack.Infrastructure.Repositories
 
             var query = """
                 INSERT INTO Tarefas 
-                (Titulo, Descricao, DataCriacao, DataConclusao, Status) 
+                (Titulo, Descricao, DataCriacao, DataConclusao, Ordenacao, Status) 
                 OUTPUT INSERTED.*
                 VALUES 
-                (@Titulo, @Descricao, @DataCriacao, @DataConclusao, @Status)
+                (@Titulo, @Descricao, @DataCriacao, @DataConclusao, @Ordenacao, @Status)
             """;
 
+            if (tarefa.Status == Status.Concluida) {
+                tarefa.DataConclusao = DateTime.Now.AddSeconds(1);
+            }
+            
             var parameters = new
             {
                 tarefa.Titulo,
                 tarefa.Descricao,
                 tarefa.DataCriacao,
                 tarefa.DataConclusao,
+                tarefa.Ordenacao,
                 Status = tarefa.Status.ToString()
             };
 
