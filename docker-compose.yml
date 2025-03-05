@@ -4,7 +4,7 @@ services:
   backend:
     container_name: backend
     build: ./backend
-    network_mode: "host"  
+    # network_mode: "host"  
     ports:
       - "5159:5159"
     environment:
@@ -13,6 +13,7 @@ services:
       - ConnectionStrings__TestsConnection=Server=${DB_HOST};Database=${TEST_DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=True
     volumes:
       - ./backend:/app
+      # - /app/nupkg
     depends_on:
       - db
 
@@ -22,7 +23,7 @@ services:
     environment:
       - VITE_PORT=3000
       - VITE_API_URL=http://localhost:5159/api
-    network_mode: "host"
+    # network_mode: "host"
     ports:
       - "3000:3000"
     volumes:
@@ -38,7 +39,7 @@ services:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=${DB_PASSWORD}
       - MSSQL_PID=Developer
-    network_mode: "host"
+    # network_mode: "host"
     ports:
       - "1433:1433" 
     volumes:
