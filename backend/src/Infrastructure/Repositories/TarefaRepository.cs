@@ -89,6 +89,15 @@ namespace TodoBack.Infrastructure.Repositories
         {
             using var conexao = _databaseService.GetConnection();
             
+            // Atualizar data de conclusão
+            if (tarefa.Status == Status.Concluida) {
+                if (!tarefa.DataConclusao.HasValue) {
+                    tarefa.DataConclusao = DateTime.Now;
+                }
+            } else {
+                tarefa.DataConclusao = null;
+            }
+           
             var query = """
                 UPDATE Tarefas 
                 SET Titulo = @Titulo, 
