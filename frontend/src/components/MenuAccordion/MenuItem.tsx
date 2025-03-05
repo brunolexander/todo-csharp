@@ -1,9 +1,17 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 
-function MenuItem() {
+function MenuItem({ titulo, ativo, onClick }: { 
+    titulo: string,
+    ativo: boolean,
+    onClick: MouseEventHandler
+ }) {
     return (
-        <li className="mb-2">
-            <a href="#" className="block hover:bg-gray-700 p-2 rounded">All projects (3)</a>
+        <li>
+            <button
+                type="button"
+                onClick={onClick} 
+                className={`block ${ativo ? 'bg-gray-900' : ''} py-4 w-full  cursor-pointer text-start hover:bg-gray-700 p-2 rounded`}>
+            { titulo }</button>
         </li>
     );
 }
