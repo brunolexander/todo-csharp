@@ -1,8 +1,11 @@
 import GrupoTarefasProps from "./GrupoTarefas.types";
 import BotaoAdicionarTarefa from "../BotaoAdicionarTarefa";
+import MenuAdicionarTarefa from '../MenuAdicionarTarefa';
 import CardTarefa from "../CardTarefa";
 import { rectSortingStrategy, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useDroppable } from "@dnd-kit/core";
+import EventBus from "@/evenbus/EventBus";
+import { TarefaEvents } from "@/evenbus";
 
 function GrupoTarefas({ status, titulo, tarefas }: GrupoTarefasProps) {
 
@@ -24,7 +27,7 @@ function GrupoTarefas({ status, titulo, tarefas }: GrupoTarefasProps) {
           <span className="font-semibold">
             {titulo} ({tarefas.length})
           </span>
-          <BotaoAdicionarTarefa />
+          <MenuAdicionarTarefa status={status} ordenacao={tarefas.length + 1} />
         </div>
 
         {tarefas.map((tarefa) => (
