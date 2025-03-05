@@ -9,7 +9,8 @@ import Tarefa from "../../models/Tarefa.model";
  */
 interface GrupoTarefasProps {
     status: TarefaStatus;
-    tarefas: Array<Tarefa>;
+    titulo: string;
+    tarefas: Tarefa[];
 }
 
 export default GrupoTarefasProps;

@@ -64,6 +64,15 @@ namespace TodoBack.Application.Services
         }
 
         /// <summary>
+        /// Salva a ordenação de uma lista de tarefas.
+        /// </summary>
+        /// <param name="ordenacoes">A lista de ordenações de tarefas a serem salvas.</param>
+        public async Task SalvarOrdenacao(List<OrdenacaoTarefa> ordenacoes)
+        {
+            await _tarefaRepository.SalvarOrdenacao(ordenacoes);
+        }
+
+        /// <summary>
         /// Remove uma tarefa com base no identificador.
         /// </summary>
         /// <param name="id">Identificador da tarefa a ser removida.</param>

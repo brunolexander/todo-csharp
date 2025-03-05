@@ -114,6 +114,29 @@ namespace TodoBack.Infrastructure.Repositories
         }
 
         /// <summary>
+        /// Salva a ordenação de uma lista de tarefas.
+        /// </summary>
+        /// <param name="ordenacoes">A lista de ordenações de tarefas a serem salvas.</param>
+        public async Task SalvarOrdenacao(List<OrdenacaoTarefa> ordenacoes)
+        {
+            using var conexao = _databaseService.GetConnection();
+
+            var query = """
+                UPDATE Tarefas 
+                SET Ordenacao = @Ordenacao
+                WHERE Id = @Id
+            """;
+
+            var parameters = ordenacoes.Select(tarefa => new
+            {
+                tarefa.Id,
+                tarefa.Ordenacao
+            });
+
+            await conexao.ExecuteAsync(query, parameters);
+        }
+
+        /// <summary>
         /// Remove uma tarefa com base no ID.
         /// </summary>
         /// <param name="id">ID da tarefa a ser removida.</param>

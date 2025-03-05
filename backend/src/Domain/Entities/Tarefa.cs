@@ -53,5 +53,10 @@ namespace TodoBack.Domain.Entities
         /// </summary>
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public Status Status { get; set; } = Status.Pendente;
+
+        /// <summary>
+        /// Ordem da tarefa.
+        /// </summary>
+        public int Ordenacao { get; set; }
     }
 }

@@ -8,6 +8,7 @@ interface Tarefa {
     dataCriacao: Date; // Data de criação da tarefa
     dataConclusao: Date | null; // Data de conclusão da tarefa
     status: TarefaStatus; // Status atual da tarefa
+    ordenacao: number;
 };
 
 export default Tarefa;

@@ -1,48 +1,177 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import './App.css'
-import GruposTarefa from './modules/tarefa/components/GrupoTarefas';
-import TarefaStatus from './modules/tarefa/enums/TarefaStatus.enum'
-import Header from './components/Header';
-import BarraLateral from './components/BarraLateral/BarraLateral';
-import Tarefa from './modules/tarefa/models/Tarefa.model';
-import { listarTodas } from './modules/tarefa/services/Tarefa.service';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import "./App.css";
+import GruposTarefa from "./modules/tarefa/components/GrupoTarefas";
+import TarefaStatus from "./modules/tarefa/enums/TarefaStatus.enum";
+import Header from "./components/Header";
+import BarraLateral from "./components/BarraLateral/BarraLateral";
+import Tarefa from "./modules/tarefa/models/Tarefa.model";
+import * as TarefaService from "./modules/tarefa/services/Tarefa.service";
+import CardTarefa from "./modules/tarefa/components/CardTarefa";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  defaultDropAnimation,
+  DragStartEvent,
+} from "@dnd-kit/core";
+
 
 function App() {
+  const [tarefas, setTarefas] = useState<Tarefa[]>([]);
 
-	const [tarefas, setTarefas] = useState<Tarefa[]>([]);
+  const tarefasAgrupadas = useMemo(() => {
+    return {
+      concluidas: tarefas.filter(
+        (tarefa) => tarefa.status === TarefaStatus.Concluida
+      ),
+      pendentes: tarefas.filter(
+        (tarefa) => tarefa.status === TarefaStatus.Pendente
+      ),
+      emProgresso: tarefas.filter(
+        (tarefa) => tarefa.status === TarefaStatus.EmProgresso
+      ),
+    };
+  }, [tarefas]);
 
-	const tarefasAgrupadas = useMemo(() => {
-		return {
-			concluidas: tarefas.filter((tarefa) => tarefa.status === TarefaStatus.Concluida),
-			pendentes: tarefas.filter((tarefa) => tarefa.status === TarefaStatus.Pendente),
-			emProgresso: tarefas.filter((tarefa) => tarefa.status === TarefaStatus.EmProgresso),
-		};
-	}, [tarefas]);
-	
-	useEffect(() => {
-		listarTodas().then((tarefas: Tarefa[]) => {
-			setTarefas(tarefas);
-		});
-	}, []);
+  const [tarfaOverlay, setTarefaOverlay] = useState<Tarefa>(null);
 
-	return (
-		<>
-			<div className='bg-gray-900 text-white font-sans flex min-h-screen h-full'>
-				<BarraLateral />
-				
-				<main className="flex-1 p-8 ml-64">
-					<Header />
+  useEffect(() => {
+    console.log("load tarefas");
+    TarefaService.listarTodas().then((tarefas: Tarefa[]) => {
+      setTarefas(tarefas.sort((a, b) => a.ordenacao - b.ordenacao));
+    });
+  }, []);
 
-					<section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
-						<GruposTarefa status={TarefaStatus.Pendente} tarefas={tarefasAgrupadas.pendentes} />
-						<GruposTarefa status={TarefaStatus.EmProgresso} tarefas={tarefasAgrupadas.emProgresso} />
-						<GruposTarefa status={TarefaStatus.Concluida} tarefas={tarefasAgrupadas.concluidas} />
-					</section>
-				</main>
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-			</div>
-		</>
-	)
+  // Função debounce para limitar chamadas da mesma função em um curto espaço de tempo
+  const debounce = (func: Function, delay: number) => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    return (...args: any[]) => {
+      clearTimeout(timeoutId); // Cancela o timeout anterior
+      timeoutId = setTimeout(() => func(...args), delay); // Define um novo timeout
+    };
+  };
+
+  const onDragStart = (event: DragStartEvent): void => {
+    setTarefaOverlay(tarefas.find(t => t.id === event.active.id));
+  };
+  
+  const onDragOver = debounce((event: DragOverEvent): void => {
+    const { active, over, collisions } = event;
+    if (over !== null) {
+      const novoStatus = over.data.current.status;
+
+      if (active.data.current.status != novoStatus) {
+        setTarefas((listaAtual) => {
+          return listaAtual.map((tarefa) =>
+            tarefa.id === active.data.current.id
+              ? { ...tarefa, status: novoStatus }
+              : tarefa
+          );
+        });
+      }
+    }
+  }, 10);
+
+  const onDragEnd = (event: DragEndEvent): Promise<void> => {
+    const { active, over } = event;
+    const tarefaAtiva = tarefas.find(t => t.id === active.id);
+    const tarefaSobreposta = tarefas.find(t => t.id === over.id);
+
+    if (!tarefaAtiva) {
+      return;
+    }
+
+    // Esconder overlay
+    setTarefaOverlay(null);
+
+    // Atualizar status da tarefa ativa
+    TarefaService.atualizar(tarefaAtiva);
+
+    if (tarefaSobreposta) {
+      // Reordenar as tarefas
+      setTarefas(listaAtual => {
+        const novasTarefas = listaAtual.map(tarefa => 
+          tarefa.id === tarefaAtiva.id
+            ? tarefaSobreposta
+            : tarefa.id === tarefaSobreposta.id
+            ? tarefaAtiva
+            : tarefa
+        );
+      
+        // Salvar ordenação
+        TarefaService.salvarOrdenacao(novasTarefas.map((tarefa, ordenacao) => ({ id: tarefa.id, ordenacao })));
+      
+        return novasTarefas;
+      });
+    }
+  };
+
+  return (
+    <>
+      <div className="bg-gray-900 text-white font-sans flex min-h-screen h-full">
+        <BarraLateral />
+
+        <main className="flex flex-col flex-1 p-8 ml-64">
+          <Header />
+
+          <DndContext
+            // sensors={sensors}
+            // collisionDetection={closestCenter}
+            onDragStart={onDragStart}
+            onDragOver={onDragOver}
+            onDragEnd={onDragEnd}
+          >
+            <section className="flex-1 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
+              <DragOverlay dropAnimation={defaultDropAnimation}>
+                {tarfaOverlay ? (
+                  <CardTarefa 
+                    key={tarfaOverlay.id}
+                    id={tarfaOverlay.id}
+                    titulo={tarfaOverlay.titulo}
+                    descricao={tarfaOverlay.descricao}
+                    dataCriacao={tarfaOverlay.dataCriacao}
+                    dataConclusao={tarfaOverlay.dataConclusao}
+                    status={tarfaOverlay.status}
+                    ordenacao={tarfaOverlay.ordenacao}
+                  />
+                ) : null}
+              </DragOverlay>
+
+              <GruposTarefa
+                status={TarefaStatus.Pendente}
+                titulo={"Pendente"}
+                tarefas={tarefasAgrupadas.pendentes}
+              />
+              <GruposTarefa
+                status={TarefaStatus.EmProgresso}
+                titulo={"Em Progresso"}
+                tarefas={tarefasAgrupadas.emProgresso}
+              />
+              <GruposTarefa
+                status={TarefaStatus.Concluida}
+                titulo={"Concluída"}
+                tarefas={tarefasAgrupadas.concluidas}
+              />
+            </section>
+          </DndContext>
+        </main>
+      </div>
+    </>
+  );
 }
 
 export default App;

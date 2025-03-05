@@ -41,6 +41,12 @@ namespace TodoBack.Infrastructure.Interfaces
         Task<Tarefa> Atualizar(Tarefa tarefa);
 
         /// <summary>
+        /// Salva a ordenação de uma lista de tarefas.
+        /// </summary>
+        /// <param name="ordenacoes">A lista de ordenações de tarefas a serem salvas.</param>
+        Task SalvarOrdenacao(List<OrdenacaoTarefa> ordenacoes);
+
+        /// <summary>
         /// Remove uma tarefa pelo seu ID.
         /// </summary>
         /// <param name="id">O ID da tarefa a ser removida.</param>

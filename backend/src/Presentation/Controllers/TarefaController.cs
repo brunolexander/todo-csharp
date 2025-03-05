@@ -75,6 +75,27 @@ namespace TodoBack.Presentation.Controllers
             return Ok(tarefaAtualizada);
         }
 
+       
+        /// <summary>
+        /// Salva a ordenação das tarefas.
+        /// </summary>
+        /// <param name="ordenacoes">Lista de objetos contendo o ID da tarefa e sua nova ordenação.</param>
+        /// <returns>
+        /// 200 (OK) se a ordenação for salva com sucesso.
+        /// 400 (Bad Request) se os dados forem inválidos.
+        /// </returns>
+        [HttpPut("Ordenacao")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "Salva a ordenação das tarefas")]
+        public async Task<IActionResult> SalvarOrdenacao([FromBody] List<OrdenacaoTarefa> ordenacoes)
+        {
+            await _tarefaService.SalvarOrdenacao(ordenacoes);
+
+            return Ok();
+        }
+
         /// <summary>
         /// Exclui uma tarefa existente.
         /// </summary>
