@@ -17,6 +17,35 @@ export async function listarTodas(): Promise<Tarefa[]> {
     return tarefas.map((tarefa: any) => converterJsonParaTarefa(tarefa));
 }
 
+
+/**
+ * Cria uma nova tarefa.
+ *
+ * @param tarefa Dados da nova tarefa.
+ * @returns Uma Promise que resolve com a resposta da API.
+ */
+export async function criar(dados: {
+    titulo: string;
+    descricao: string;
+    status: string;
+    ordenacao: number;
+  }): Promise<Tarefa> {
+      const response = await fetch(`${API_URL}/Tarefa`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dados),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Erro na requisição: ${response.status} ${response.statusText}`);
+    }
+
+    const json = await response.json();
+    return converterJsonParaTarefa(json);
+}
+
 /**
  * Atualiza uma tarefa existente.
  *
