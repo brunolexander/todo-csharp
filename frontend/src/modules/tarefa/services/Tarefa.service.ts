@@ -41,6 +41,23 @@ export async function atualizar(tarefa: Tarefa): Promise<Tarefa> {
 }
 
 /**
+ * Excluí uma tarefa existente.
+ *
+ * @param id A ID tarefa a ser excluída.
+ * @returns Uma Promise que resolve com a resposta da API.
+ */
+export async function excluir(id: number): Promise<void> {
+    const response = await fetch(`${API_URL}/Tarefa/${id}`, {
+        method: 'DELETE'
+    });
+
+    if (!response.ok) {
+        throw new Error(`Erro na requisição: ${response.status} ${response.statusText}`);
+    }
+}
+
+
+/**
  * Salva a ordenação das tarefas.
  *
  * @param ordenacoes - Array de objetos contendo o ID da tarefa e sua ordenação.

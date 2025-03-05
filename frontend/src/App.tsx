@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useState, useMemo, useEffect } from "react";
 import "./App.css";
 import GruposTarefa from "./modules/tarefa/components/GrupoTarefas";
 import TarefaStatus from "./modules/tarefa/enums/TarefaStatus.enum";
@@ -7,21 +7,32 @@ import BarraLateral from "./components/BarraLateral/BarraLateral";
 import Tarefa from "./modules/tarefa/models/Tarefa.model";
 import * as TarefaService from "./modules/tarefa/services/Tarefa.service";
 import CardTarefa from "./modules/tarefa/components/CardTarefa";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import EventBus, { TarefaEvents } from "./evenbus";
 
 import {
   DndContext,
   DragEndEvent,
   DragOverEvent,
   DragOverlay,
-  KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
   defaultDropAnimation,
   DragStartEvent,
+  PointerSensorOptions,
 } from "@dnd-kit/core";
 
+class CardTarefaSensor extends PointerSensor {
+    static activators = [
+      {
+        eventName: 'onPointerDown' as const,
+        handler: (
+          { nativeEvent: event }: PointerEvent,
+          { onActivation }: PointerSensorOptions,
+        ): boolean => (event.target.closest('button') === null)
+      }
+    ];
+  }
 
 function App() {
   const [tarefas, setTarefas] = useState<Tarefa[]>([]);
@@ -43,17 +54,18 @@ function App() {
   const [tarfaOverlay, setTarefaOverlay] = useState<Tarefa>(null);
 
   useEffect(() => {
-    console.log("load tarefas");
     TarefaService.listarTodas().then((tarefas: Tarefa[]) => {
       setTarefas(tarefas.sort((a, b) => a.ordenacao - b.ordenacao));
     });
+    
+    EventBus.on(TarefaEvents.Excluida, (data) => {
+      setTarefas((listaAtual) => listaAtual.filter((tarefa) => tarefa.id !== data.id));
+    });
+    
   }, []);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
+    useSensor(CardTarefaSensor)
   );
 
   // Função debounce para limitar chamadas da mesma função em um curto espaço de tempo
@@ -129,7 +141,7 @@ function App() {
           <Header />
 
           <DndContext
-            // sensors={sensors}
+            sensors={sensors}
             // collisionDetection={closestCenter}
             onDragStart={onDragStart}
             onDragOver={onDragOver}
