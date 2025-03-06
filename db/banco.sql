@@ -17,7 +17,7 @@ GO
 IF NOT EXISTS (SELECT TOP 1 1 FROM sysobjects WHERE name='Tarefas' AND xtype='U')
 BEGIN
     CREATE TABLE Tarefas (
-        Id INT NOT NULL,
+        Id INT NOT NULL IDENTITY(1,1),
         Titulo NVARCHAR(100) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
         Descricao NVARCHAR(255)  COLLATE SQL_Latin1_General_CP1_CI_AS DEFAULT NULL,
         DataCriacao DATETIME NULL DEFAULT GETDATE(),
@@ -41,7 +41,7 @@ GO
 IF NOT EXISTS (SELECT TOP 1 1 FROM sysobjects WHERE name='Tarefas' AND xtype='U')
 BEGIN
     CREATE TABLE Tarefas (
-        Id INT NOT NULL,
+        Id INT NOT NULL IDENTITY(1,1),
         Titulo NVARCHAR(100) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
         Descricao NVARCHAR(255)  COLLATE SQL_Latin1_General_CP1_CI_AS DEFAULT NULL,
         DataCriacao DATETIME NULL DEFAULT GETDATE(),
