@@ -30,7 +30,7 @@ Siga os passos abaixo para configurar o ambiente e executar o projeto:
    
    Acesse o bash do container db:
    ```sh
-   docker exec -it db bash
+   docker exec -it --user root db bash
    ```
 
    Execute a importação do banco de dados:

@@ -53,7 +53,7 @@ BEGIN
 END;
 
 -- Inserting data into TodoDB.Tarefas
-INSERT INTO Tarefas (Id, Titulo, Descricao, DataCriacao, DataConclusao, Status, Ordenacao, DataExclusao) VALUES
-    (1, 'Tarefa 1', 'Descrição da Tarefa 1', '2025-03-05 23:57:22.000', NULL, 'Pendente', 1, NULL),
-    (2, 'Tarefa 2', 'Descrição da Tarefa 2', '2025-03-05 23:57:22.000', NULL, 'EmProgresso', 2, NULL),
-    (3, 'Tarefa 3', 'Descrição da Tarefa 3', '2025-03-05 23:57:22.000', '2025-03-05 23:58:22.000', 'Concluida', 3, NULL);
+INSERT INTO Tarefas (Titulo, Descricao, DataCriacao, DataConclusao, Status, Ordenacao, DataExclusao) VALUES
+    ('Tarefa 1', 'Descrição da Tarefa 1', '2025-03-05 23:57:22.000', NULL, 'Pendente', 1, NULL),
+    ('Tarefa 2', 'Descrição da Tarefa 2', '2025-03-05 23:57:22.000', NULL, 'EmProgresso', 2, NULL),
+    ('Tarefa 3', 'Descrição da Tarefa 3', '2025-03-05 23:57:22.000', '2025-03-05 23:58:22.000', 'Concluida', 3, NULL);
