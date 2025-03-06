@@ -147,6 +147,6 @@ public class TarefaRepositoryTests : IClassFixture<DatabaseFixture>
         var tarefaNoBanco = await conexao.QueryFirstOrDefaultAsync<Tarefa>(
             "SELECT * FROM Tarefas WHERE Id = @Id", new { Id = id });
 
-        Assert.Null(tarefaNoBanco);
+        Assert.NotNull(tarefaNoBanco.DataExclusao);
     }
 }

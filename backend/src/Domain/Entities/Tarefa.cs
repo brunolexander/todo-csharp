@@ -44,7 +44,7 @@ namespace TodoBack.Domain.Entities
         /// <summary>
         /// Data de exclusão
         /// </summary>
-        public DateTime DataExclusao { get; set; }
+        public DateTime? DataExclusao { get; set; }
 
         /// <summary>
         /// Data de conclusão, deve ser maior que a data de criação.
