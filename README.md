@@ -4,7 +4,7 @@
 
 Aplicativo de gerenciamento de tarefas desenvolvido com React, ASP.NET e SQL Server.
 
-![alt text](image.png)
+![Tela principal da aplicação](image.png)
 
 ---
 
@@ -13,7 +13,7 @@ Aplicativo de gerenciamento de tarefas desenvolvido com React, ASP.NET e SQL Ser
 Siga os passos abaixo para configurar o ambiente e executar o projeto:
 
 1. **Clone o repositório:**
-   <pre><code>git clone https://github.com/brunolexander/todo-csharp.git .</code></pre>
+   <pre><code>git clone https://github.com/brunolexander/todo-csharp.git</code></pre>
 
 2. **Acesse a pasta do projeto:**
    <pre><code>cd todo-csharp</code></pre>
@@ -28,9 +28,14 @@ Siga os passos abaixo para configurar o ambiente e executar o projeto:
    docker container cp db/banco.sql db:/tmp/banco.sql
    ```
    
+   Acesse o bash do container db:
+   ```sh
+   docker exec -it db bash
+   ```
+
    Execute a importação do banco de dados:
    ```sh
-   docker exec -it db bash -c "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -C -i /tmp/banco.sql"
+   /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -C -i /tmp/banco.sql
    ```
 
 Após esses passos, acesse o sistema em: <a href="http://localhost:3000">http://localhost:3000</a>
