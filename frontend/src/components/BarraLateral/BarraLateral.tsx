@@ -54,7 +54,7 @@ function BarraLateral() {
             key={4}
             ativo={filtroStatus === TarefaStatus.Concluida}
             onClick={() => setFiltroStatus(TarefaStatus.Concluida)}
-            titulo={`Concluído (${quantidadeTarefas?.concluidos || 0})`}
+            titulo={`Concluído (${quantidadeTarefas?.concluidas || 0})`}
           />
         </ul>
       </nav>
